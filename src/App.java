@@ -1,5 +1,3 @@
-package CS143;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,7 +7,7 @@ import java.util.Scanner;
 import java.lang.String;
 
 
-public class Main {
+public class App {
 
     public static void clearScreen() {
         for (int i = 0; i < 30; i++) {
@@ -17,7 +15,7 @@ public class Main {
         }
     }
 
-    int getInt(Scanner inputScanner, String prompt = "") {
+    static int getInt(Scanner inputScanner, String prompt) {
         while(true) {
             System.out.print(prompt);
             if (inputScanner.hasNextInt()) {
@@ -28,7 +26,7 @@ public class Main {
         }
     }
 
-    float getFloat(Scanner inputScanner, String prompt = "") {
+    static float getFloat(Scanner inputScanner, String prompt) {
         while(true) {
             System.out.print(prompt);
             if (inputScanner.hasNextFloat()) {
@@ -44,22 +42,29 @@ public class Main {
     }
 
     public static void updateCoal(Scanner inputScanner, Connection connection) throws SQLException {
+        inputScanner.nextLine();
         Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM coal;");
 
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM coal");
-
+        clearScreen();
+        System.out.println("**************************************************************");
+        System.out.println("\tCoal");
         while (resultSet.next()) {
-            "( coal_type: " + resultSet.getString("coal_type") + ",\n"
-            + "\tsulfur_content: " + resultSet.getString("sulfur_content") + ",\n"
-            + "\tunit_cost: " + resultSet.getFloat("unit_cost") + ",\n"
-            + "\tprice_per_unit_allowance: " + resultSet.getFloat("price_per_unit_allowance") + ",\n"
-            + "\tscrubber_rate: " + resultSet.getFloat("scrubber_rate") + ",\n"
-            + "\theat_rate: " + resultSet.getFloat("heat_rate") + ",\n"
-            + "\tcoal_burn_rate: " + resultSet.getFloat("coal_burn_rate") + ",\n"
-            + "\temittion_rate: " + resultSet.getFloat("emittion_rate") + ")\n"
+            System.out.println("---------------------------------------------------------");
+            System.out.println(
+                "coal_type:\t\t\t" + resultSet.getString("coal_type") + ",\n"
+                + "sulfur_content:\t\t\t" + resultSet.getString("sulfur_content") + ",\n"
+                + "unit_cost:\t\t\t" + resultSet.getFloat("unit_cost") + ",\n"
+                + "price_per_unit_allowance:\t" + resultSet.getFloat("price_per_unit_allowance") + ",\n"
+                + "scrubber_rate:\t\t\t" + resultSet.getFloat("scrubber_rate") + ",\n"
+                + "heat_rate:\t\t\t" + resultSet.getFloat("heat_rate") + ",\n"
+                + "coal_burn_rate:\t\t\t" + resultSet.getFloat("coal_burn_rate") + ",\n"
+                + "emittion_rate:\t\t\t" + resultSet.getFloat("emittion_rate")
+            );
         }
-
-        System.out.print("coal type: ");
+        System.out.println("**************************************************************");
+        
+        System.out.print("Select a Coal Type: ");
         String coalType = inputScanner.nextLine();
         System.out.print("sulfur content: ");
         String sulfurContent = inputScanner.nextLine();
@@ -71,30 +76,39 @@ public class Main {
         float emittionRate = getFloat(inputScanner, "emittion rate: ");
 
         String sql = "UPDATE coal SET "
-            + "sulfur_content = " + sulfurContent
-            + "unit_cost = " + unitCost
-            + "price_per_unit_allowance = " + pricePerUnitAllowance
-            + "scrubber_rate = " + scrubberRate
-            + "heat_rate = " + heatRate
-            + "coal_burn_rate = " + burnRate
-            + "emittion_rate = " + emittionRate
-            + "WHERE coal_type = " + coalType;
+            + "sulfur_content = \"" + sulfurContent + "\", "
+            + "unit_cost = " + unitCost + ", "
+            + "price_per_unit_allowance = " + pricePerUnitAllowance + ", "
+            + "scrubber_rate = " + scrubberRate + ", "
+            + "heat_rate = " + heatRate + ", "
+            + "coal_burn_rate = " + burnRate + ", "
+            + "emittion_rate = " + emittionRate + " "
+            + "WHERE coal_type = \"" + coalType + "\"";
 
         statement.executeUpdate(sql);
-        ResultSet resultSet = statement.executeQuery(
-            "SELECT * FROM coal WHERE coal_type = " + coalType
+        resultSet = statement.executeQuery(
+            "SELECT * FROM coal WHERE coal_type = \"" + coalType + "\""
         );
 
+        System.out.println("**************************************************************");
+        System.out.println("\tUpdated Rows:");
         while (resultSet.next()) {
-            "( coal_type: " + resultSet.getString("coal_type") + ",\n"
-            + "\tsulfur_content: " + resultSet.getString("sulfur_content") + ",\n"
-            + "\tunit_cost: " + resultSet.getFloat("unit_cost") + ",\n"
-            + "\tprice_per_unit_allowance: " + resultSet.getFloat("price_per_unit_allowance") + ",\n"
-            + "\tscrubber_rate: " + resultSet.getFloat("scrubber_rate") + ",\n"
-            + "\theat_rate: " + resultSet.getFloat("heat_rate") + ",\n"
-            + "\tcoal_burn_rate: " + resultSet.getFloat("coal_burn_rate") + ",\n"
-            + "\temittion_rate: " + resultSet.getFloat("emittion_rate") + ")\n"
+            System.out.println("---------------------------------------------------------");
+            System.out.println(
+                "coal_type:\t\t\t" + resultSet.getString("coal_type") + ",\n"
+                + "sulfur_content:\t\t\t" + resultSet.getString("sulfur_content") + ",\n"
+                + "unit_cost:\t\t\t" + resultSet.getFloat("unit_cost") + ",\n"
+                + "price_per_unit_allowance:\t" + resultSet.getFloat("price_per_unit_allowance") + ",\n"
+                + "scrubber_rate:\t\t\t" + resultSet.getFloat("scrubber_rate") + ",\n"
+                + "heat_rate:\t\t\t" + resultSet.getFloat("heat_rate") + ",\n"
+                + "coal_burn_rate:\t\t\t" + resultSet.getFloat("coal_burn_rate") + ",\n"
+                + "emittion_rate:\t\t\t" + resultSet.getFloat("emittion_rate")
+            );
         }
+        System.out.println("**************************************************************");
+        inputScanner.nextLine();
+        System.out.println("Press enter to return to Updates menu...");
+        inputScanner.nextLine();
         resultSet.close();  
     }
 
