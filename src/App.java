@@ -4,6 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.*;
 import java.util.Scanner;
+
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
+
 import java.lang.String;
 
 
@@ -40,23 +43,41 @@ public class App {
     public static void stats_and_data_analysis(Scanner inputScanner) throws SQLException {
         Connection connection = login(inputScanner, "jdbc:mysql://localhost:3306/groupproject?");
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM boileractivity;");
+
         clearScreen();
         System.out.println("************************************************************************");
-        System.out.println("\tBoiler Activity");
-        while (resultSet.next()) {
-            System.out.println("------------------------------------------------------------------------");
-            System.out.println(
-                "amount_coal_to_burn:\t\t\t" + resultSet.getString("amount_coal_to_burn") + ",\n"
-                + "coal_type:\t\t\t\t" + resultSet.getString("coal_type") + ",\n"
-                + "energy_generated:\t\t\t" + resultSet.getFloat("energy_generated") + ",\n"
-                + "sulfur_emitted:\t\t\t\t" + resultSet.getFloat("sulfur_emitted") + "\n"
-            );
-        }
+        System.out.println("\tStatistics");
+        System.out.println("------------------------------------------------------------------------");
+
+        int year = getInt(inputScanner, "Enter the year: ");
+
+        ResultSet resultSet = statement.executeQuery(
+            "SELECT SUM(amount_coal_to_burn) AS total FROM boileractivity "
+            + "WHERE date >= \"" + year + "-01-01 00:00:00\" "
+            + "AND date < \"" + (year+1) + "-01-01 00:00:00\"");
+        resultSet.next();
+        System.out.println("Total amount of coal burned: " + resultSet.getFloat("total"));
+
+        resultSet = statement.executeQuery(
+            "SELECT SUM(sulfur_emitted) AS total FROM boileractivity "
+            + "WHERE date >= \"" + year + "-01-01 00:00:00\" "
+            + "AND date < \"" + (year+1) + "-01-01 00:00:00\"");
+        resultSet.next();
+        System.out.println("Total amount of sulfur emitted: " + resultSet.getFloat("total"));
+
+        resultSet = statement.executeQuery(
+            "SELECT SUM(energy_generated) AS total FROM boileractivity "
+            + "WHERE date >= \"" + year + "-01-01 00:00:00\" "
+            + "AND date < \"" + (year+1) + "-01-01 00:00:00\"");
+        resultSet.next();
+        System.out.println("Total amount of energy generated: " + resultSet.getFloat("total"));
+
         System.out.println("************************************************************************");
         System.out.println("Press enter to return to main menu...");
         inputScanner.nextLine();
+        inputScanner.nextLine();
         resultSet.close();
+        connection.close();
     }
 
     public static void updateBoiler(Scanner inputScanner, Connection connection) throws SQLException {
