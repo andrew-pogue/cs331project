@@ -37,6 +37,28 @@ public class App {
         }
     }
 
+    public static void stats_and_data_analysis(Scanner inputScanner) throws SQLException {
+        Connection connection = login(inputScanner, "jdbc:mysql://localhost:3306/groupproject?");
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM boileractivity;");
+        clearScreen();
+        System.out.println("************************************************************************");
+        System.out.println("\tBoiler Activity");
+        while (resultSet.next()) {
+            System.out.println("------------------------------------------------------------------------");
+            System.out.println(
+                "amount_coal_to_burn:\t\t\t" + resultSet.getString("amount_coal_to_burn") + ",\n"
+                + "coal_type:\t\t\t\t" + resultSet.getString("coal_type") + ",\n"
+                + "energy_generated:\t\t\t" + resultSet.getFloat("energy_generated") + ",\n"
+                + "sulfur_emitted:\t\t\t\t" + resultSet.getFloat("sulfur_emitted") + "\n"
+            );
+        }
+        System.out.println("************************************************************************");
+        System.out.println("Press enter to return to main menu...");
+        inputScanner.nextLine();
+        resultSet.close();
+    }
+
     public static void updateBoiler(Scanner inputScanner, Connection connection) throws SQLException {
         inputScanner.nextLine();
         Statement statement = connection.createStatement();
@@ -141,7 +163,7 @@ public class App {
             System.out.println("---------------------------------------------------------");
             System.out.println(
                 "coal_type:\t\t\t" + resultSet.getString("coal_type") + ",\n"
-                + "sulfur_content:\t\t\t" + resultSet.getString("sulfur_content") + ",\n"
+                + "sulfur_content:\t\t\t" + resultSet.getFloat("sulfur_content") + ",\n"
                 + "unit_cost:\t\t\t" + resultSet.getFloat("unit_cost") + ",\n"
                 + "price_per_unit_allowance:\t" + resultSet.getFloat("price_per_unit_allowance") + ",\n"
                 + "scrubber_rate:\t\t\t" + resultSet.getFloat("scrubber_rate") + ",\n"
@@ -154,8 +176,7 @@ public class App {
         
         System.out.print("Select a Coal Type: ");
         String coalType = inputScanner.nextLine();
-        System.out.print("sulfur content: ");
-        String sulfurContent = inputScanner.nextLine();
+        float sulfurContent = getFloat(inputScanner, "sulfur content: ");
         float unitCost = getFloat(inputScanner, "unit cost: ");
         float pricePerUnitAllowance = getFloat(inputScanner, "price per unit allowance: ");
         float scrubberRate = getFloat(inputScanner, "scrubber rate: ");
@@ -184,7 +205,7 @@ public class App {
             System.out.println("---------------------------------------------------------");
             System.out.println(
                 "coal_type:\t\t\t" + resultSet.getString("coal_type") + ",\n"
-                + "sulfur_content:\t\t\t" + resultSet.getString("sulfur_content") + ",\n"
+                + "sulfur_content:\t\t\t" + resultSet.getFloat("sulfur_content") + ",\n"
                 + "unit_cost:\t\t\t" + resultSet.getFloat("unit_cost") + ",\n"
                 + "price_per_unit_allowance:\t" + resultSet.getFloat("price_per_unit_allowance") + ",\n"
                 + "scrubber_rate:\t\t\t" + resultSet.getFloat("scrubber_rate") + ",\n"
@@ -424,32 +445,32 @@ public class App {
                 case 1: // Update a scpecific Plant
                     try {
                         updatePlant(inputScanner, connection);
-                        bPrintMenu = true;
                     } catch (SQLException e) {
                         System.out.println("SQLException: " + e.getMessage());
                         System.out.println("SQLState: " + e.getSQLState());
                         System.out.println("VendorError: " + e.getErrorCode());
                     }
+                    bPrintMenu = true;
                     break;
                 case 2: // Update a scpecific Boiler
                     try {
                         updateBoiler(inputScanner, connection);
-                        bPrintMenu = true;
                     } catch (SQLException e) {
                         System.out.println("SQLException: " + e.getMessage());
                         System.out.println("SQLState: " + e.getSQLState());
                         System.out.println("VendorError: " + e.getErrorCode());
                     }
+                    bPrintMenu = true;
                     break;
                 case 3: // Update a scpecific Coal
                     try {
                         updateCoal(inputScanner, connection);
-                        bPrintMenu = true;
                     } catch (SQLException e) {
                         System.out.println("SQLException: " + e.getMessage());
                         System.out.println("SQLState: " + e.getSQLState());
                         System.out.println("VendorError: " + e.getErrorCode());
                     }
+                    bPrintMenu = true;
                     break;
                 case 0: // Cancel
                     bCancel = true;
@@ -502,19 +523,24 @@ public class App {
                     // bPrintMenu = true;
                     break;
                 case 3: // Statistics and Data Analysis
-                    System.out.println("Feature not implemented!");
-                    // statisticsMenu();
-                    // bPrintMenu = true;
-                    break;
-                case 4: // Updates
                     try {
-                        updatesMenu(inputScanner);
-                        bPrintMenu = true;
+                        stats_and_data_analysis(inputScanner);
                     } catch (SQLException e) {
                         System.out.println("SQLException: " + e.getMessage());
                         System.out.println("SQLState: " + e.getSQLState());
                         System.out.println("VendorError: " + e.getErrorCode());
                     }
+                    bPrintMenu = true;
+                    break;
+                case 4: // Updates
+                    try {
+                        updatesMenu(inputScanner);
+                    } catch (SQLException e) {
+                        System.out.println("SQLException: " + e.getMessage());
+                        System.out.println("SQLState: " + e.getSQLState());
+                        System.out.println("VendorError: " + e.getErrorCode());
+                    }
+                    bPrintMenu = true;
                     break;
                 case 0: // Quit
                     bCancel = true;

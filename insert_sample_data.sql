@@ -26,13 +26,13 @@ VALUES  (0, 0, "A1", "1995-03-12", 100000, "", "SECTOR 1", "RENOVATION", "1996-0
         (42, 6, "E1", "2022-07-11", 500000, "", "SECTOR 2", "CONSTRUCTION", NULL);
 
 INSERT INTO coal (coal_type, sulfur_content, unit_cost, price_per_unit_allowance, scrubber_rate, heat_rate, coal_burn_rate, emittion_rate)
-VALUES  ("anthracite", "SO2", 98, 100, 70, 9, 4, 0.07),
-        ("bituminous", "SO2", 100, 88, 80, 8, 3, 0.05),
-        ("subbituminous", "SO2", 88, 72, 75, 7, 6, 0.04),
-        ("lignite", "SO2", 95, 90, 90, 9, 5, 0.07),
-        ("charcoal", "SO2", 97, 80, 60, 10, 5, 0.05),
-        ("peat", "SO2", 110, 101, 0.5, 10, 5, 0.04),
-        ("coke", "SO2", 105, 89, 85, 9, 4, 0.03);
+VALUES  ("anthracite", 0.5, 98, 100, 70, 9, 4, 0.07),
+        ("bituminous", 0.3, 100, 88, 80, 8, 3, 0.05),
+        ("subbituminous", 0.6, 88, 72, 75, 7, 6, 0.04),
+        ("lignite", 0.7, 95, 90, 90, 9, 5, 0.07),
+        ("charcoal", 0.6, 97, 80, 60, 10, 5, 0.05),
+        ("peat", 0.3, 110, 101, 0.5, 10, 5, 0.04),
+        ("coke", 0.4, 105, 89, 85, 9, 4, 0.03);
 
 INSERT INTO boileractivity (boiler_activity_ID, boiler_ID, coal_type, amount_coal_to_burn, sulfur_emitted, date, energy_generated)
 VALUES  (1201, 0, "lignite", 30, 15, "2016-04-06", 160),
