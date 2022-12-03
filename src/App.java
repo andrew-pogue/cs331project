@@ -22,7 +22,7 @@ public class App {
                 return inputScanner.nextInt();
             }
 
-            System.out.print(inputScanner.nextLine() + " is not valid! Enter an integer.");
+            System.out.println(inputScanner.nextLine() + " is not valid! Enter an integer.");
         }
     }
 
@@ -33,12 +33,102 @@ public class App {
                 return inputScanner.nextFloat();
             }
 
-            System.out.print(inputScanner.nextLine() + " is not valid! Enter a floating point number.");
+            System.out.println(inputScanner.nextLine() + " is not valid! Enter a floating point number.");
         }
     }
 
     public static void updateBoiler(Scanner inputScanner, Connection connection) throws SQLException {
+        inputScanner.nextLine();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM boiler;");
+
+        clearScreen();
+        System.out.println("**************************************************************");
+        System.out.println("\tBoiler");
+        while (resultSet.next()) {
+            System.out.println("---------------------------------------------------------");
+            System.out.println(
+                "boiler id:\t\t\t" + resultSet.getInt("boiler_ID") + "\n"
+                + "unit id:\t\t\t" + resultSet.getInt("unit_ID") + "\n"
+                + "name:\t\t\t\t" + resultSet.getString("name") + "\n"
+                + "purchase date:\t\t\t" + resultSet.getString("purchase_date") + "\n"
+                + "purchase price:\t\t\t" + resultSet.getFloat("purchase_price") + "\n"
+                + "functionality description:\t" + resultSet.getString("functionality_description") + "\n"
+                + "location:\t\t\t" + resultSet.getString("location") + "\n"
+                + "boiler status:\t\t\t" + resultSet.getString("boiler_status") + "\n"
+                + "production date:\t\t" + resultSet.getString("production_date")
+            );
+        }
+        System.out.println("**************************************************************");
         
+        int boilerID = getInt(inputScanner, "boiler id: ");
+        int unitID = getInt(inputScanner, "unit id: ");
+        
+        System.out.print("name: ");
+        String name = inputScanner.nextLine();
+        inputScanner.nextLine();
+        
+        System.out.print("purchase date: ");
+        String purchaseDate = inputScanner.nextLine();
+        inputScanner.nextLine();
+        
+        float purchasePrice = getFloat(inputScanner, "purchase price: ");
+        
+        System.out.print("functionality description: ");
+        String description = inputScanner.nextLine();
+        inputScanner.nextLine();
+        
+        System.out.print("location: ");
+        String location = inputScanner.nextLine();
+        inputScanner.nextLine();
+
+        System.out.print("boiler status: ");
+        String status = inputScanner.nextLine();
+        inputScanner.nextLine();
+
+        System.out.print("production date: ");
+        String productionDate = inputScanner.nextLine();
+        inputScanner.nextLine();
+
+        String sql = "UPDATE coal SET "
+            + "unit_ID = " + unitID + ", "
+            + "name = \"" + name + "\", "
+            + "purchase_date = \"" + purchaseDate + "\", "
+            + "purchase_price = " + purchasePrice + ", "
+            + "functionality_description = \"" + description + "\", "
+            + "location = \"" + location + "\", "
+            + "boiler_status = \"" + status + "\", "
+            + "production_date = \"" + productionDate + "\" "
+            + "WHERE boiler_ID = " + boilerID;
+
+        System.out.println(sql);
+        statement.executeUpdate(sql);
+        System.out.println("SELECT * FROM coal WHERE boiler_ID = " + boilerID);
+        resultSet = statement.executeQuery(
+            "SELECT * FROM coal WHERE boiler_ID = " + boilerID
+        );
+
+        System.out.println("**************************************************************");
+        System.out.println("\tUpdated Rows:");
+        while (resultSet.next()) {
+            System.out.println("---------------------------------------------------------");
+            System.out.println(
+                "boiler id:\t\t\t" + resultSet.getInt("boiler_ID") + "\n"
+                + "unit id:\t\t\t" + resultSet.getInt("unit_ID") + "\n"
+                + "name:\t\t\t\t" + resultSet.getString("name") + "\n"
+                + "purchase date:\t\t\t" + resultSet.getString("purchase_date") + "\n"
+                + "purchase price:\t\t\t" + resultSet.getFloat("purchase_price") + "\n"
+                + "functionality description:\t" + resultSet.getString("functionality_description") + "\n"
+                + "location:\t\t\t" + resultSet.getString("location") + "\n"
+                + "boiler status:\t\t\t" + resultSet.getString("boiler_status") + "\n"
+                + "production date:\t\t" + resultSet.getString("production_date")
+            );
+        }
+        System.out.println("**************************************************************");
+        inputScanner.nextLine();
+        System.out.println("Press enter to return to Updates menu...");
+        inputScanner.nextLine();
+        resultSet.close();  
     }
 
     public static void updateCoal(Scanner inputScanner, Connection connection) throws SQLException {
