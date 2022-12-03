@@ -17,12 +17,85 @@ public class Main {
         }
     }
 
+    int getInt(Scanner inputScanner, String prompt = "") {
+        while(true) {
+            System.out.print(prompt);
+            if (inputScanner.hasNextInt()) {
+                return inputScanner.nextInt();
+            }
+
+            System.out.print(inputScanner.nextLine() + " is not valid! Enter an integer.");
+        }
+    }
+
+    float getFloat(Scanner inputScanner, String prompt = "") {
+        while(true) {
+            System.out.print(prompt);
+            if (inputScanner.hasNextFloat()) {
+                return inputScanner.nextFloat();
+            }
+
+            System.out.print(inputScanner.nextLine() + " is not valid! Enter a floating point number.");
+        }
+    }
+
     public static void updateBoiler(Scanner inputScanner, Connection connection) throws SQLException {
         
     }
 
     public static void updateCoal(Scanner inputScanner, Connection connection) throws SQLException {
-        
+        Statement statement = connection.createStatement();
+
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM coal");
+
+        while (resultSet.next()) {
+            "( coal_type: " + resultSet.getString("coal_type") + ",\n"
+            + "\tsulfur_content: " + resultSet.getString("sulfur_content") + ",\n"
+            + "\tunit_cost: " + resultSet.getFloat("unit_cost") + ",\n"
+            + "\tprice_per_unit_allowance: " + resultSet.getFloat("price_per_unit_allowance") + ",\n"
+            + "\tscrubber_rate: " + resultSet.getFloat("scrubber_rate") + ",\n"
+            + "\theat_rate: " + resultSet.getFloat("heat_rate") + ",\n"
+            + "\tcoal_burn_rate: " + resultSet.getFloat("coal_burn_rate") + ",\n"
+            + "\temittion_rate: " + resultSet.getFloat("emittion_rate") + ")\n"
+        }
+
+        System.out.print("coal type: ");
+        String coalType = inputScanner.nextLine();
+        System.out.print("sulfur content: ");
+        String sulfurContent = inputScanner.nextLine();
+        float unitCost = getFloat(inputScanner, "unit cost: ");
+        float pricePerUnitAllowance = getFloat(inputScanner, "price per unit allowance: ");
+        float scrubberRate = getFloat(inputScanner, "scrubber rate: ");
+        float heatRate = getFloat(inputScanner, "heat rate: ");
+        float burnRate = getFloat(inputScanner, "burn rate: ");
+        float emittionRate = getFloat(inputScanner, "emittion rate: ");
+
+        String sql = "UPDATE coal SET "
+            + "sulfur_content = " + sulfurContent
+            + "unit_cost = " + unitCost
+            + "price_per_unit_allowance = " + pricePerUnitAllowance
+            + "scrubber_rate = " + scrubberRate
+            + "heat_rate = " + heatRate
+            + "coal_burn_rate = " + burnRate
+            + "emittion_rate = " + emittionRate
+            + "WHERE coal_type = " + coalType;
+
+        statement.executeUpdate(sql);
+        ResultSet resultSet = statement.executeQuery(
+            "SELECT * FROM coal WHERE coal_type = " + coalType
+        );
+
+        while (resultSet.next()) {
+            "( coal_type: " + resultSet.getString("coal_type") + ",\n"
+            + "\tsulfur_content: " + resultSet.getString("sulfur_content") + ",\n"
+            + "\tunit_cost: " + resultSet.getFloat("unit_cost") + ",\n"
+            + "\tprice_per_unit_allowance: " + resultSet.getFloat("price_per_unit_allowance") + ",\n"
+            + "\tscrubber_rate: " + resultSet.getFloat("scrubber_rate") + ",\n"
+            + "\theat_rate: " + resultSet.getFloat("heat_rate") + ",\n"
+            + "\tcoal_burn_rate: " + resultSet.getFloat("coal_burn_rate") + ",\n"
+            + "\temittion_rate: " + resultSet.getFloat("emittion_rate") + ")\n"
+        }
+        resultSet.close();  
     }
 
     public static void updatePlant(Scanner inputScanner, Connection connection) throws SQLException {
@@ -37,8 +110,8 @@ public class Main {
         System.out.println();
 
         int plantId = -1;
-        System.out.print("Enter a Plant ID: ");
         while(true) {
+            System.out.print("Select an existing Plant ID: ");
             if (inputScanner.hasNextInt()) {
                 plantId = inputScanner.nextInt();
                 if (plantId >= 0 && plantId < nRows) {
@@ -46,7 +119,7 @@ public class Main {
                 }
             }
             
-            System.out.print("That is not a valid Plant Id!");
+            System.out.print(inputScanner.nextLine() + " is not a valid Plant Id!");
         }
 
         resultSet = statement.executeQuery("select * from plant where plant_ID=" + plantId );
