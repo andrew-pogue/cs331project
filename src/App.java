@@ -90,7 +90,7 @@ public class App {
         String productionDate = inputScanner.nextLine();
         inputScanner.nextLine();
 
-        String sql = "UPDATE coal SET "
+        String sql = "UPDATE boiler SET "
             + "unit_ID = " + unitID + ", "
             + "name = \"" + name + "\", "
             + "purchase_date = \"" + purchaseDate + "\", "
@@ -101,11 +101,9 @@ public class App {
             + "production_date = \"" + productionDate + "\" "
             + "WHERE boiler_ID = " + boilerID;
 
-        System.out.println(sql);
         statement.executeUpdate(sql);
-        System.out.println("SELECT * FROM coal WHERE boiler_ID = " + boilerID);
         resultSet = statement.executeQuery(
-            "SELECT * FROM coal WHERE boiler_ID = " + boilerID
+            "SELECT * FROM boiler WHERE boiler_ID = " + boilerID
         );
 
         System.out.println("**************************************************************");
